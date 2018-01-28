@@ -1,19 +1,73 @@
 package ru.test65.data.bo;
 
+
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
+
 public class Workman {
 
-    public Long id;
+    private Long id;
 
-    public String extId;
+    @SerializedName("f_name")
+    private String fName;
 
-    public String name;
+    @SerializedName("l_name")
+    private String lName;
 
-    public int color;
+    private Date birthday;
 
-    public int orderBy;
+    @SerializedName("avatr_url")
+    private String avatrUrl;
 
-    public boolean showOnTablet;
+    private Specialty specialty;
 
-    public int priority;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFName() {
+        return fName;
+    }
+
+    public void setFName(String fName) {
+        this.fName = fName;
+    }
+
+    public String getLName() {
+        return lName;
+    }
+
+    public void setLName(String lName) {
+        this.lName = lName;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getAvatrUrl() {
+        return avatrUrl;
+    }
+
+    public void setAvatrUrl(String avatrUrl) {
+        this.avatrUrl = avatrUrl;
+    }
+
+    public Specialty getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(Specialty specialty) {
+        this.specialty = specialty;
+    }
 }

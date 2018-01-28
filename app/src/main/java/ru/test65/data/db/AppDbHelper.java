@@ -7,9 +7,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Observable;
+import ru.test65.data.bo.Specialty;
 import ru.test65.data.bo.Workman;
 import ru.test65.data.db.model.DaoMaster;
 import ru.test65.data.db.model.DaoSession;
+import ru.test65.data.db.model.WorkmanModelDao;
 
 
 @Singleton
@@ -24,23 +26,42 @@ public class AppDbHelper implements DbHelper {
         this.appModelMapper = appModelMapper;
     }
 
-
     @Override
-    public Observable<List<Workman>> getAllCategories() {
-        return Observable.fromCallable(() -> mDaoSession.getWorkmanModelDao()
-                .loadAll())
-                .map(appModelMapper::toCategoriesBO);
+    public Observable<List<Workman>> getWorkmansBySpecialty(Long specialtyId) {
+        return Observable.fromCallable(() -> mDaoSession.getWorkmanModelDao().queryBuilder().where(WorkmanModelDao.Properties.SpecialtyId.eq(specialtyId)).list())
+                .flatMap(Observable::fromIterable)
+                .map(appModelMapper::toWorkmanBO)
+                .toList().toObservable();
     }
 
     @Override
-    public Observable<Boolean> insertCategories(List<Workman> categories) {
-        return Observable.just(categories)
-                .map(appModelMapper::toCategoriesModelList)
-                .map(categoryModels -> {
-                    mDaoSession.getWorkmanModelDao().deleteAll();
-                    mDaoSession.getWorkmanModelDao().insertInTx(categoryModels);
+    public Observable<Workman> getWorkmanById(Long workmanId) {
+        return Observable.fromCallable(() -> mDaoSession.getWorkmanModelDao().load(workmanId))
+                .map(appModelMapper::toWorkmanBO);
+    }
+
+    @Override
+    public Observable<List<Specialty>> getAllSpecialty() {
+        return Observable.fromCallable(() -> mDaoSession.getSpecialtyModelDao().loadAll())
+                .flatMap(Observable::fromIterable)
+                .map(appModelMapper::toSpecialtyBO)
+                .toList().toObservable();
+    }
+
+
+    @Override
+    public Observable<Boolean> saveWorkmans(List<Workman> workmans) {
+        return Observable.just(
+                mDaoSession.callInTxNoException(() -> {
+                    for (Workman workmen : workmans) {
+                        if (workmen.getSpecialty() != null) {
+                            mDaoSession.getSpecialtyModelDao().save(appModelMapper.toSpecialtyModel(workmen.getSpecialty()));
+                        }
+                        mDaoSession.getWorkmanModelDao().save(appModelMapper.toWorkmanModel(workmen));
+                    }
                     return true;
-                });
+                })
+        );
     }
 
 

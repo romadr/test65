@@ -9,10 +9,12 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Observable;
+import ru.test65.data.bo.Specialty;
 import ru.test65.data.bo.Workman;
 import ru.test65.data.db.DbHelper;
 import ru.test65.data.prefs.PreferencesHelper;
 import ru.test65.data.remote.ApiHelper;
+import ru.test65.data.remote.model.LoadDataRes;
 import ru.test65.di.ApplicationContext;
 
 
@@ -46,13 +48,29 @@ public class AppDataManager implements DataManager {
         preferencesHelper.setApiServer(url);
     }
 
+
     @Override
-    public Observable<List<Workman>> getAllCategories() {
-        return null;
+    public Observable<LoadDataRes> loadData() {
+        return apiHelper.loadData();
     }
 
     @Override
-    public Observable<Boolean> insertCategories(List<Workman> categories) {
-        return null;
+    public Observable<List<Workman>> getWorkmansBySpecialty(Long specialtyId) {
+        return dbHelper.getWorkmansBySpecialty(specialtyId);
+    }
+
+    @Override
+    public Observable<Workman> getWorkmanById(Long workmanId) {
+        return dbHelper.getWorkmanById(workmanId);
+    }
+
+    @Override
+    public Observable<List<Specialty>> getAllSpecialty() {
+        return dbHelper.getAllSpecialty();
+    }
+
+    @Override
+    public Observable<Boolean> saveWorkmans(List<Workman> workmans) {
+        return  dbHelper.saveWorkmans(workmans);
     }
 }

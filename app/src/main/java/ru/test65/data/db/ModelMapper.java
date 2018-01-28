@@ -1,14 +1,18 @@
 package ru.test65.data.db;
 
-import java.util.List;
-
+import ru.test65.data.bo.Specialty;
 import ru.test65.data.bo.Workman;
+import ru.test65.data.db.model.SpecialtyModel;
 import ru.test65.data.db.model.WorkmanModel;
 
 public interface ModelMapper {
 
-    List<WorkmanModel> toCategoriesModelList(List<Workman> categories);
+    WorkmanModel toWorkmanModel(Workman workman);
 
-    List<Workman> toCategoriesBO(List<WorkmanModel> products);
+    Workman toWorkmanBO(WorkmanModel workmanModel);
+
+    SpecialtyModel toSpecialtyModel(Specialty specialty);
+
+    Specialty toSpecialtyBO(SpecialtyModel specialtyModel);
 
 }

@@ -5,6 +5,8 @@ import android.content.Context;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Observable;
+import ru.test65.data.remote.model.LoadDataRes;
 import ru.test65.di.ApplicationContext;
 
 @Singleton
@@ -19,10 +21,9 @@ public class AppApiHelper implements ApiHelper {
         this.remoteApi = remoteApi;
     }
 
-//    @Override
-//    public Observable<ServerResponse> sendReport(ShortReport report) {
-//        return remoteApi.sendReport(report);
-//    }
-
+    @Override
+    public Observable<LoadDataRes> loadData() {
+        return remoteApi.loadData();
+    }
 
 }
