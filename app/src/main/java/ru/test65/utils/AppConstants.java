@@ -8,7 +8,7 @@ public class AppConstants {
     public static final String SIMPLE_TIME_FORMAT = "HH:mm";
     public static final String SIMPLE_DATE_TIME_FORMAT = "dd.MM.yyyy HH:mm:ss";
 
-    public static String GSON_API_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static String GSON_API_DATE_FORMAT = "yyyy-MM-dd";
 
     public static int DEFAULT_API_TIMEOUT = 10;
 

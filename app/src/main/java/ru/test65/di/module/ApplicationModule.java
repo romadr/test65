@@ -1,11 +1,21 @@
 package ru.test65.di.module;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 
+import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
@@ -17,6 +27,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ru.terrakok.cicerone.Cicerone;
+import ru.terrakok.cicerone.Router;
 import ru.test65.BuildConfig;
 import ru.test65.data.AppDataManager;
 import ru.test65.data.DataManager;
@@ -33,8 +45,6 @@ import ru.test65.di.ApplicationContext;
 import ru.test65.di.DatabaseInfo;
 import ru.test65.di.PreferenceInfo;
 import ru.test65.utils.AppConstants;
-import ru.terrakok.cicerone.Cicerone;
-import ru.terrakok.cicerone.Router;
 
 
 @Module
@@ -98,9 +108,24 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
+    @SuppressLint("SimpleDateFormat")
     Gson provideGson() {
-        GsonBuilder gsonBuilder = new GsonBuilder()
-                .enableComplexMapKeySerialization()
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            final DateFormat df = new SimpleDateFormat(AppConstants.GSON_API_DATE_FORMAT);
+
+            @Override
+            public Date deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context)
+                    throws JsonParseException {
+                try {
+                    return df.parse(json.getAsString());
+                } catch (ParseException e) {
+                    return null;
+                }
+            }
+        });
+        gsonBuilder.enableComplexMapKeySerialization()
+                .serializeNulls()
                 .setDateFormat(AppConstants.GSON_API_DATE_FORMAT);
         //.excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC, Modifier.PRIVATE);
 
@@ -123,8 +148,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    DataManager provideDataManager(AppDataManager prodDataManager) {
-        return prodDataManager;
+    DataManager provideDataManager(AppDataManager appDataManager) {
+        return appDataManager;
     }
 
     @Provides

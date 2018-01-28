@@ -1,6 +1,8 @@
 package ru.test65.data.db;
 
 
+import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -11,7 +13,9 @@ import ru.test65.data.bo.Specialty;
 import ru.test65.data.bo.Workman;
 import ru.test65.data.db.model.DaoMaster;
 import ru.test65.data.db.model.DaoSession;
-import ru.test65.data.db.model.WorkmanModelDao;
+import ru.test65.data.db.model.JoinWorkmansWithSpecialtyModel;
+import ru.test65.data.db.model.JoinWorkmansWithSpecialtyModelDao;
+import ru.test65.data.db.model.WorkmanModel;
 
 
 @Singleton
@@ -28,7 +32,11 @@ public class AppDbHelper implements DbHelper {
 
     @Override
     public Observable<List<Workman>> getWorkmansBySpecialty(Long specialtyId) {
-        return Observable.fromCallable(() -> mDaoSession.getWorkmanModelDao().queryBuilder().where(WorkmanModelDao.Properties.SpecialtyId.eq(specialtyId)).list())
+        return Observable.fromCallable(() -> {
+            final QueryBuilder<WorkmanModel> queryBuilder = mDaoSession.getWorkmanModelDao().queryBuilder();
+            queryBuilder.join(JoinWorkmansWithSpecialtyModel.class, JoinWorkmansWithSpecialtyModelDao.Properties.WorkmanId);
+            return queryBuilder.where(JoinWorkmansWithSpecialtyModelDao.Properties.WorkmanId.eq(specialtyId)).list();
+        })
                 .flatMap(Observable::fromIterable)
                 .map(appModelMapper::toWorkmanBO)
                 .toList().toObservable();
@@ -53,12 +61,26 @@ public class AppDbHelper implements DbHelper {
     public Observable<Boolean> saveWorkmans(List<Workman> workmans) {
         return Observable.just(
                 mDaoSession.callInTxNoException(() -> {
+
+                    //clear db
+                    mDaoSession.getSpecialtyModelDao().deleteAll();
+                    mDaoSession.getWorkmanModelDao().deleteAll();
+
+                    //save all specialty
                     for (Workman workmen : workmans) {
                         if (workmen.getSpecialty() != null) {
-                            mDaoSession.getSpecialtyModelDao().save(appModelMapper.toSpecialtyModel(workmen.getSpecialty()));
+                            for (Specialty specialty : workmen.getSpecialty()) {
+                                mDaoSession.getSpecialtyModelDao().insertOrReplace(appModelMapper.toSpecialtyModel(specialty));
+
+                            }
                         }
-                        mDaoSession.getWorkmanModelDao().save(appModelMapper.toWorkmanModel(workmen));
                     }
+
+                    //after save workmans
+                    for (Workman workmen : workmans) {
+                        mDaoSession.getWorkmanModelDao().insertOrReplace(appModelMapper.toWorkmanModel(workmen));
+                    }
+
                     return true;
                 })
         );

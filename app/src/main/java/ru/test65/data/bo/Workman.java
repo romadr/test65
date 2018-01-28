@@ -4,6 +4,7 @@ package ru.test65.data.bo;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
+import java.util.List;
 
 public class Workman {
 
@@ -20,8 +21,7 @@ public class Workman {
     @SerializedName("avatr_url")
     private String avatrUrl;
 
-    private Specialty specialty;
-
+    private List<Specialty> specialty;
 
     public Long getId() {
         return id;
@@ -63,11 +63,23 @@ public class Workman {
         this.avatrUrl = avatrUrl;
     }
 
-    public Specialty getSpecialty() {
+    public List<Specialty> getSpecialty() {
         return specialty;
     }
 
-    public void setSpecialty(Specialty specialty) {
+    public void setSpecialty(List<Specialty> specialty) {
         this.specialty = specialty;
+    }
+
+    @Override
+    public String toString() {
+        return "Workman{" +
+                "id=" + id +
+                ", fName='" + fName + '\'' +
+                ", lName='" + lName + '\'' +
+                ", birthday=" + birthday +
+                ", avatrUrl='" + avatrUrl + '\'' +
+                ", specialty=" + specialty +
+                '}';
     }
 }

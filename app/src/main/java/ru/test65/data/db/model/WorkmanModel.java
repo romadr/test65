@@ -2,12 +2,13 @@ package ru.test65.data.db.model;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.JoinEntity;
+import org.greenrobot.greendao.annotation.ToMany;
 
 import java.util.Date;
+import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
-import org.greenrobot.greendao.annotation.NotNull;
 
 @Entity
 public class WorkmanModel {
@@ -21,10 +22,13 @@ public class WorkmanModel {
 
     private String avatrUrl;
 
-    private long specialtyId;
-
-    @ToOne(joinProperty = "specialtyId")
-    private SpecialtyModel specialty;
+    @ToMany
+    @JoinEntity(
+            entity = JoinWorkmansWithSpecialtyModel.class,
+            sourceProperty = "workmanId",
+            targetProperty = "specialtyId"
+    )
+    private List<SpecialtyModel> specialtyList;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -34,15 +38,14 @@ public class WorkmanModel {
     @Generated(hash = 693118420)
     private transient WorkmanModelDao myDao;
 
-    @Generated(hash = 243899894)
+    @Generated(hash = 2005586778)
     public WorkmanModel(Long id, String fName, String lName, Date birthday,
-            String avatrUrl, long specialtyId) {
+            String avatrUrl) {
         this.id = id;
         this.fName = fName;
         this.lName = lName;
         this.birthday = birthday;
         this.avatrUrl = avatrUrl;
-        this.specialtyId = specialtyId;
     }
 
     @Generated(hash = 795042314)
@@ -89,49 +92,33 @@ public class WorkmanModel {
         this.avatrUrl = avatrUrl;
     }
 
-    public long getSpecialtyId() {
-        return this.specialtyId;
-    }
-
-    public void setSpecialtyId(long specialtyId) {
-        this.specialtyId = specialtyId;
-    }
-
-    @Generated(hash = 2048110654)
-    private transient Long specialty__resolvedKey;
-
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 306311700)
-    public SpecialtyModel getSpecialty() {
-        long __key = this.specialtyId;
-        if (specialty__resolvedKey == null
-                || !specialty__resolvedKey.equals(__key)) {
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 285049681)
+    public List<SpecialtyModel> getSpecialtyList() {
+        if (specialtyList == null) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
             SpecialtyModelDao targetDao = daoSession.getSpecialtyModelDao();
-            SpecialtyModel specialtyNew = targetDao.load(__key);
+            List<SpecialtyModel> specialtyListNew = targetDao
+                    ._queryWorkmanModel_SpecialtyList(id);
             synchronized (this) {
-                specialty = specialtyNew;
-                specialty__resolvedKey = __key;
+                if (specialtyList == null) {
+                    specialtyList = specialtyListNew;
+                }
             }
         }
-        return specialty;
+        return specialtyList;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 965663349)
-    public void setSpecialty(@NotNull SpecialtyModel specialty) {
-        if (specialty == null) {
-            throw new DaoException(
-                    "To-one property 'specialtyId' has not-null constraint; cannot set to-one to null");
-        }
-        synchronized (this) {
-            this.specialty = specialty;
-            specialtyId = specialty.getSpecialtyId();
-            specialty__resolvedKey = specialtyId;
-        }
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 75184658)
+    public synchronized void resetSpecialtyList() {
+        specialtyList = null;
     }
 
     /**
@@ -176,6 +163,5 @@ public class WorkmanModel {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getWorkmanModelDao() : null;
     }
-
 
 }

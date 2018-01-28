@@ -7,4 +7,11 @@ import ru.test65.data.bo.Workman;
 public class LoadDataRes {
 
     public List<Workman> response;
+
+    @Override
+    public String toString() {
+        return "LoadDataRes{" +
+                "response=" + response +
+                '}';
+    }
 }

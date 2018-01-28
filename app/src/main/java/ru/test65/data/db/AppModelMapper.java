@@ -2,6 +2,8 @@ package ru.test65.data.db;
 
 import android.content.Context;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import ru.test65.data.bo.Specialty;
@@ -29,7 +31,10 @@ public class AppModelMapper implements ModelMapper {
         workmanModel.setBirthday(workman.getBirthday());
         workmanModel.setAvatrUrl(workman.getAvatrUrl());
         if (workman.getSpecialty() != null) {
-            workmanModel.setSpecialtyId(workman.getSpecialty().getSpecialtyId());
+            workmanModel.resetSpecialtyList();
+            for (Specialty specialty : workman.getSpecialty()) {
+                workmanModel.getSpecialtyList().add(toSpecialtyModel(specialty));
+            }
         }
         return workmanModel;
     }
@@ -43,8 +48,11 @@ public class AppModelMapper implements ModelMapper {
         workman.setLName(workmanModel.getLName());
         workman.setBirthday(workmanModel.getBirthday());
         workman.setAvatrUrl(workmanModel.getAvatrUrl());
-        if (workmanModel.getSpecialty() != null) {
-            workman.setSpecialty(toSpecialtyBO(workmanModel.getSpecialty()));
+        if (workmanModel.getSpecialtyList() != null) {
+            workman.setSpecialty(new ArrayList<>());
+            for (SpecialtyModel specialtyModel : workmanModel.getSpecialtyList()) {
+                workman.getSpecialty().add(toSpecialtyBO(specialtyModel));
+            }
         }
         return workman;
     }
