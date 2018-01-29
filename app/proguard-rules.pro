@@ -44,3 +44,4 @@ public static java.lang.String TABLENAME;
 public static java.lang.String TABLENAME;
 }
 -keep class **$Properties
+

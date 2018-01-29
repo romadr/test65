@@ -17,6 +17,7 @@ package ru.test65.ui.workman.list;
 
 
 import ru.test65.data.bo.Specialty;
+import ru.test65.data.bo.Workman;
 import ru.test65.di.PerActivity;
 import ru.test65.ui.base.MvpPresenter;
 
@@ -24,4 +25,6 @@ import ru.test65.ui.base.MvpPresenter;
 public interface WorkmanListMvpPresenter<V extends WorkmanListMvpView> extends MvpPresenter<V> {
 
     void initWithSpecialty(Specialty specialty);
+
+    void onWorkmanClick(Workman workman);
 }

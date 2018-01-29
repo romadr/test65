@@ -1,9 +1,5 @@
 <resources>
     <string name="app_name">65apps test</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="on_data_loading_error">Ошибка при загрузке данных</string>
     <string name="loading_progress_text">Подождите, идет заугрузка…</string>
     <string name="specialty_title">Специальности</string>
     <string name="data_load_success_message">Данные усешно загружены</string>

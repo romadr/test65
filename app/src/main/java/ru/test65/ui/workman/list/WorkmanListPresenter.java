@@ -15,20 +15,30 @@
 
 package ru.test65.ui.workman.list;
 
+import android.os.Bundle;
+
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import ru.terrakok.cicerone.Cicerone;
+import ru.terrakok.cicerone.Router;
 import ru.test65.R;
 import ru.test65.data.DataManager;
 import ru.test65.data.bo.Specialty;
+import ru.test65.data.bo.Workman;
+import ru.test65.ui.Screens;
 import ru.test65.ui.base.BasePresenter;
+import ru.test65.ui.workman.card.WorkmanCardFragment;
 import timber.log.Timber;
 
 
 public class WorkmanListPresenter<V extends WorkmanListMvpView> extends BasePresenter<V>
         implements WorkmanListMvpPresenter<V> {
+
+    @Inject
+    Cicerone<Router> cicerone;
 
     @Inject
     public WorkmanListPresenter(DataManager dataManager,
@@ -49,5 +59,13 @@ public class WorkmanListPresenter<V extends WorkmanListMvpView> extends BasePres
                             getMvpView().showMessage(R.string.data_load_error_message);
                             Timber.e(ex);
                         });
+    }
+
+    @Override
+    public void onWorkmanClick(Workman workman) {
+        final Bundle data = new Bundle();
+        data.putSerializable(WorkmanCardFragment.WORKMAN_EXTRA, workman);
+        cicerone.getRouter().navigateTo(Screens.WORKMAN_CARD, data);
+
     }
 }

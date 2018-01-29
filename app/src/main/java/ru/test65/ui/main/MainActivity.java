@@ -99,7 +99,6 @@ public class MainActivity extends BaseActivity implements MainActivityMvpView {
         getActivityComponent().inject(this);
         setUnBinder(ButterKnife.bind(this));
 
-
         setUp();
 
         mPresenter.onAttach(this);

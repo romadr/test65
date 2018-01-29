@@ -48,7 +48,17 @@ public class SpecialtyListPresenter<V extends SpecialtyListMvpView> extends Base
     @Override
     public void onAttach(V mvpView) {
         super.onAttach(mvpView);
+        loadAllSpecialty();
+    }
 
+    @Override
+    public void onSpecialtyClick(Specialty specialty) {
+        final Bundle data = new Bundle();
+        data.putSerializable(WorkmanListFragment.SPECIALTY_EXTRA, specialty);
+        cicerone.getRouter().navigateTo(Screens.WORKMAN_LIST, data);
+    }
+
+    private void loadAllSpecialty() {
         getDataManager().getAllSpecialty()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -59,14 +69,6 @@ public class SpecialtyListPresenter<V extends SpecialtyListMvpView> extends Base
                             getMvpView().showMessage(R.string.data_load_error_message);
                             Timber.e(ex);
                         });
-    }
-
-    @Override
-    public void onSpecialtyClick(Specialty specialty) {
-        final Bundle data = new Bundle();
-        data.putSerializable(WorkmanListFragment.SPECIALTY_EXTRA, specialty);
-        cicerone.getRouter().navigateTo(Screens.WORKMAN_LIST, data);
-
     }
 }
 

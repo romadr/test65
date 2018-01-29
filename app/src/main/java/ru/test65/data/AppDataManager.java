@@ -37,7 +37,6 @@ public class AppDataManager implements DataManager {
         this.dbHelper = dbHelper;
     }
 
-
     @Override
     public String getApiServer() {
         return preferencesHelper.getApiServer();
@@ -71,6 +70,6 @@ public class AppDataManager implements DataManager {
 
     @Override
     public Observable<Boolean> saveWorkmans(List<Workman> workmans) {
-        return  dbHelper.saveWorkmans(workmans);
+        return dbHelper.saveWorkmans(workmans);
     }
 }

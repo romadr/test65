@@ -28,7 +28,7 @@ public class SpecialtyListAdapter extends RecyclerView.Adapter<SpecialtyListAdap
         setHasStableIds(true);
     }
 
-    public void setData(List<Specialty> data){
+    public void setData(List<Specialty> data) {
         specialtyList.clear();
         specialtyList.addAll(data);
     }
@@ -41,15 +41,11 @@ public class SpecialtyListAdapter extends RecyclerView.Adapter<SpecialtyListAdap
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
         final Specialty specialty = specialtyList.get(position);
-
         if (specialty == null) return;
 
         holder.itemView.setOnClickListener(view -> onClickListener.onClick(specialty));
-
         holder.text1.setText(specialty.getName());
-
     }
 
     @Override

@@ -16,7 +16,6 @@
 package ru.test65.ui.workman.card;
 
 
-import ru.test65.data.bo.Specialty;
 import ru.test65.di.PerActivity;
 import ru.test65.ui.base.MvpPresenter;
 

@@ -5,7 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +39,7 @@ public class WorkmanListAdapter extends RecyclerView.Adapter<WorkmanListAdapter.
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(context).inflate(R.layout.my_simple_list_item_2, parent, false);
+        final View view = LayoutInflater.from(context).inflate(R.layout.my_simple_list_item_2_with_icon, parent, false);
         return new ViewHolder(view);
     }
 
@@ -55,9 +58,12 @@ public class WorkmanListAdapter extends RecyclerView.Adapter<WorkmanListAdapter.
             holder.text2.setText(age + " " + CommonUtils.getAgeSuffix(age));
         } else {
             holder.text2.setText("-");
-
         }
-
+        if (workman.getAvatrUrl() != null && !workman.getAvatrUrl().isEmpty()) {
+            Picasso.with(context).load(workman.getAvatrUrl()).placeholder(R.drawable.ic_person_black_48dp).into(holder.icon);
+        } else {
+            Picasso.with(context).load(R.drawable.ic_person_black_48dp).into(holder.icon);
+        }
     }
 
     @Override
@@ -75,6 +81,9 @@ public class WorkmanListAdapter extends RecyclerView.Adapter<WorkmanListAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.icon)
+        ImageView icon;
 
         @BindView(R.id.text1)
         TextView text1;

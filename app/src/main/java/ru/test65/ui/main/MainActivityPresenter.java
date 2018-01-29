@@ -32,7 +32,10 @@ public class MainActivityPresenter<V extends MainActivityMvpView> extends BasePr
     @Override
     public void onAttach(V mvpView) {
         super.onAttach(mvpView);
+        loadData();
+    }
 
+    private void loadData() {
         getDataManager().loadData()
                 .map(loadDataRes -> getDataManager().saveWorkmans(loadDataRes.response))
                 .subscribeOn(Schedulers.io())
@@ -47,6 +50,5 @@ public class MainActivityPresenter<V extends MainActivityMvpView> extends BasePr
                             getMvpView().showMessage(R.string.data_load_error_message);
                             Timber.e(ex);
                         });
-
     }
 }

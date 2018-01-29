@@ -58,7 +58,6 @@ public class AppDbHelper implements DbHelper {
                 .toList().toObservable();
     }
 
-
     @Override
     public Observable<Boolean> saveWorkmans(List<Workman> workmans) {
         return Observable.just(
@@ -66,30 +65,28 @@ public class AppDbHelper implements DbHelper {
 
                     mDaoSession.getSpecialtyModelDao().deleteAll();
                     mDaoSession.getWorkmanModelDao().deleteAll();
+                    mDaoSession.getJoinWorkmansWithSpecialtyModelDao().deleteAll();
 
-                    for (Workman workmen : workmans) {
-                        WorkmanModel entity = appModelMapper.toWorkmanModel(workmen);
+                    for (Workman workman : workmans) {
+                        WorkmanModel entity = appModelMapper.toWorkmanModel(workman);
                         mDaoSession.insertOrReplace(entity);
-                        if (workmen.getSpecialty() != null) {
+                        if (workman.getSpecialty() != null) {
                             entity.resetSpecialtyList();
-                            for (Specialty specialty : workmen.getSpecialty()) {
+                            for (Specialty specialty : workman.getSpecialty()) {
                                 final SpecialtyModel specialtyModel = appModelMapper.toSpecialtyModel(specialty);
                                 mDaoSession.insertOrReplace(specialtyModel);
 
-                                JoinWorkmansWithSpecialtyModel joinWorkmansWithSpecialtyModel = new JoinWorkmansWithSpecialtyModel();
+                                final JoinWorkmansWithSpecialtyModel joinWorkmansWithSpecialtyModel = new JoinWorkmansWithSpecialtyModel();
                                 joinWorkmansWithSpecialtyModel.setSpecialtyId(specialtyModel.getSpecialtyId());
                                 joinWorkmansWithSpecialtyModel.setWorkmanId(entity.getId());
                                 mDaoSession.insertOrReplace(joinWorkmansWithSpecialtyModel);
 
-                                entity.getSpecialtyList().add(specialtyModel);
                             }
                         }
                     }
-
                     return true;
                 })
         );
     }
-
 
 }

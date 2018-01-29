@@ -7,5 +7,4 @@ import ru.test65.data.remote.ApiHelper;
 
 public interface DataManager extends ApiHelper, PreferencesHelper, DbHelper {
 
-
 }

@@ -33,12 +33,9 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.terrakok.cicerone.Cicerone;
-import ru.terrakok.cicerone.Router;
 import ru.test65.R;
 import ru.test65.data.bo.Specialty;
 import ru.test65.di.component.ActivityComponent;
-import ru.test65.ui.Screens;
 import ru.test65.ui.base.BaseFragment;
 
 
@@ -98,10 +95,8 @@ public class SpecialtyListFragment extends BaseFragment implements SpecialtyList
 
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(getActivity(), layoutManager.getOrientation());
         specialtyListRecyclerView.addItemDecoration(mDividerItemDecoration);
-
         specialtyListRecyclerView.setAdapter(adapter);
     }
-
 
     @Override
     public void onDestroyView() {

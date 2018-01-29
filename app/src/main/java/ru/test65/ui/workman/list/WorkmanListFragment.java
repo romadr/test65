@@ -39,7 +39,6 @@ import ru.test65.R;
 import ru.test65.data.bo.Specialty;
 import ru.test65.data.bo.Workman;
 import ru.test65.di.component.ActivityComponent;
-import ru.test65.ui.Screens;
 import ru.test65.ui.base.BaseFragment;
 
 
@@ -64,7 +63,7 @@ public class WorkmanListFragment extends BaseFragment implements WorkmanListMvpV
 
     public static WorkmanListFragment newInstance(Object data) {
         Bundle args = new Bundle();
-        if(data instanceof Bundle){
+        if (data instanceof Bundle) {
             args.putAll((Bundle) data);
         }
         WorkmanListFragment fragment = new WorkmanListFragment();
@@ -106,7 +105,7 @@ public class WorkmanListFragment extends BaseFragment implements WorkmanListMvpV
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         workmanListRecyclerView.setLayoutManager(layoutManager);
         adapter = new WorkmanListAdapter(getActivity(), workman -> {
-            cicerone.getRouter().navigateTo(Screens.WORKMAN_CARD);
+            mPresenter.onWorkmanClick(workman);
         });
 
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(getActivity(), layoutManager.getOrientation());

@@ -19,7 +19,6 @@ import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
 import ru.test65.data.DataManager;
-import ru.test65.data.bo.Specialty;
 import ru.test65.ui.base.BasePresenter;
 
 

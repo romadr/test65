@@ -27,8 +27,6 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView,
     Context context;
 
 
-
-
     private ActivityComponent mActivityComponent;
     private Unbinder mUnBinder;
     private ProgressDialog mProgressDialog;
@@ -116,7 +114,6 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView,
     }
 
     protected abstract void setUp();
-
 
 
 }

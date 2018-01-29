@@ -140,7 +140,6 @@ public class ApplicationModule {
         gsonBuilder.enableComplexMapKeySerialization()
                 .serializeNulls()
                 .setDateFormat(AppConstants.GSON_API_DATE_FORMAT);
-        //.excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC, Modifier.PRIVATE);
 
         return gsonBuilder.create();
     }

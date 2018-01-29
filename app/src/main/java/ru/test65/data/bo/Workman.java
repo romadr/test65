@@ -3,10 +3,11 @@ package ru.test65.data.bo;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Workman {
+public class Workman implements Serializable {
 
     private Long id;
 

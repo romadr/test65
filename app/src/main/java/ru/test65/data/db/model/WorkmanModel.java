@@ -1,14 +1,14 @@
 package ru.test65.data.db.model;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinEntity;
 import org.greenrobot.greendao.annotation.ToMany;
 
 import java.util.Date;
 import java.util.List;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 @Entity
 public class WorkmanModel {
@@ -30,17 +30,21 @@ public class WorkmanModel {
     )
     private List<SpecialtyModel> specialtyList;
 
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 693118420)
     private transient WorkmanModelDao myDao;
 
     @Generated(hash = 2005586778)
     public WorkmanModel(Long id, String fName, String lName, Date birthday,
-            String avatrUrl) {
+                        String avatrUrl) {
         this.id = id;
         this.fName = fName;
         this.lName = lName;
@@ -115,7 +119,9 @@ public class WorkmanModel {
         return specialtyList;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 75184658)
     public synchronized void resetSpecialtyList() {
         specialtyList = null;
