@@ -16,10 +16,12 @@
 package ru.test65.ui.specialty;
 
 
+import ru.test65.data.bo.Specialty;
 import ru.test65.di.PerActivity;
 import ru.test65.ui.base.MvpPresenter;
 
 @PerActivity
 public interface SpecialtyListMvpPresenter<V extends SpecialtyListMvpView> extends MvpPresenter<V> {
 
+    void onSpecialtyClick(Specialty specialty);
 }

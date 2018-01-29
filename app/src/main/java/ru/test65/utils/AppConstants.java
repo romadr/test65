@@ -9,8 +9,10 @@ public class AppConstants {
     public static final String SIMPLE_DATE_TIME_FORMAT = "dd.MM.yyyy HH:mm:ss";
 
     public static String GSON_API_DATE_FORMAT = "yyyy-MM-dd";
+    public static String GSON_API_DATE_FORMAT2 = "dd-MM-yyyy";
 
     public static int DEFAULT_API_TIMEOUT = 10;
+    public static long DOUBLE_CLICK_TO_EXIT_TIMEOUT = 2000;
 
     public static final String PREF_NAME = "test_pref";
     public static final String DEF_API_SERVER = "http://gitlab.65apps.com";

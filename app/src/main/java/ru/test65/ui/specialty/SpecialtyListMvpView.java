@@ -16,8 +16,12 @@
 package ru.test65.ui.specialty;
 
 
+import java.util.List;
+
+import ru.test65.data.bo.Specialty;
 import ru.test65.ui.base.MvpView;
 
 public interface SpecialtyListMvpView extends MvpView {
 
+    void showSpecialtyList(List<Specialty> data);
 }

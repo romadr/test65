@@ -19,34 +19,54 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.terrakok.cicerone.Cicerone;
+import ru.terrakok.cicerone.Router;
 import ru.test65.R;
+import ru.test65.data.bo.Specialty;
+import ru.test65.data.bo.Workman;
 import ru.test65.di.component.ActivityComponent;
+import ru.test65.ui.Screens;
 import ru.test65.ui.base.BaseFragment;
-import ru.test65.ui.workman.card.WorkmanCardMvpPresenter;
-import ru.test65.ui.workman.card.WorkmanCardMvpView;
 
 
-public class WorkmanListFragment extends BaseFragment implements WorkmanCardMvpView {
+public class WorkmanListFragment extends BaseFragment implements WorkmanListMvpView {
 
+    public static final String SPECIALTY_EXTRA = "SPECIALTY_EXTRA";
     public static final String TAG = "WorkmanListFragment";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Inject
-    WorkmanCardMvpPresenter<WorkmanCardMvpView> mPresenter;
+    @BindView(R.id.workmanList)
+    RecyclerView workmanListRecyclerView;
 
-    public static WorkmanListFragment newInstance() {
+    @Inject
+    Cicerone<Router> cicerone;
+
+    @Inject
+    WorkmanListMvpPresenter<WorkmanListMvpView> mPresenter;
+
+    private WorkmanListAdapter adapter;
+
+    public static WorkmanListFragment newInstance(Object data) {
         Bundle args = new Bundle();
+        if(data instanceof Bundle){
+            args.putAll((Bundle) data);
+        }
         WorkmanListFragment fragment = new WorkmanListFragment();
         fragment.setArguments(args);
         return fragment;
@@ -70,15 +90,31 @@ public class WorkmanListFragment extends BaseFragment implements WorkmanCardMvpV
 
     @Override
     protected void setUp(View view) {
+        final Specialty specialty = (Specialty) getArguments().getSerializable(SPECIALTY_EXTRA);
+        assert specialty != null;
+
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
         ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("Специальности");
+            actionBar.setTitle(specialty.getName());
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayShowTitleEnabled(true);
         }
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        workmanListRecyclerView.setLayoutManager(layoutManager);
+        adapter = new WorkmanListAdapter(getActivity(), workman -> {
+            cicerone.getRouter().navigateTo(Screens.WORKMAN_CARD);
+        });
+
+        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(getActivity(), layoutManager.getOrientation());
+        workmanListRecyclerView.addItemDecoration(mDividerItemDecoration);
+
+        workmanListRecyclerView.setAdapter(adapter);
+
+        mPresenter.initWithSpecialty(specialty);
     }
 
 
@@ -86,5 +122,13 @@ public class WorkmanListFragment extends BaseFragment implements WorkmanCardMvpV
     public void onDestroyView() {
         mPresenter.onDetach();
         super.onDestroyView();
+    }
+
+    @Override
+    public void showWorkmansList(List<Workman> data) {
+        if (adapter == null) return;
+        adapter.setData(data);
+        adapter.notifyDataSetChanged();
+
     }
 }

@@ -19,6 +19,7 @@ import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
 import ru.test65.data.DataManager;
+import ru.test65.data.bo.Specialty;
 import ru.test65.ui.base.BasePresenter;
 
 
@@ -30,4 +31,6 @@ public class WorkmanCardPresenter<V extends WorkmanCardMvpView> extends BasePres
                                 CompositeDisposable compositeDisposable) {
         super(dataManager, compositeDisposable);
     }
+
+
 }

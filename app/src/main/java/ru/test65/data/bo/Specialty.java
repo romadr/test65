@@ -3,7 +3,9 @@ package ru.test65.data.bo;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Specialty {
+import java.io.Serializable;
+
+public class Specialty implements Serializable {
 
     @SerializedName("specialty_id")
     private Long specialtyId;

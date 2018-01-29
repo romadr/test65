@@ -13,7 +13,6 @@ import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +44,7 @@ import ru.test65.di.ApplicationContext;
 import ru.test65.di.DatabaseInfo;
 import ru.test65.di.PreferenceInfo;
 import ru.test65.utils.AppConstants;
+import timber.log.Timber;
 
 
 @Module
@@ -112,16 +112,29 @@ public class ApplicationModule {
     Gson provideGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-            final DateFormat df = new SimpleDateFormat(AppConstants.GSON_API_DATE_FORMAT);
+            final DateFormat df1 = new SimpleDateFormat(AppConstants.GSON_API_DATE_FORMAT);
+            final DateFormat df2 = new SimpleDateFormat(AppConstants.GSON_API_DATE_FORMAT2);
 
             @Override
             public Date deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context)
                     throws JsonParseException {
+
+                //O_o
                 try {
-                    return df.parse(json.getAsString());
-                } catch (ParseException e) {
+                    final String asString = json.getAsString();
+                    if (asString == null || asString.isEmpty()) return null;
+
+                    int yearPartLength = asString.substring(0, asString.indexOf("-")).length();
+                    if (yearPartLength < 4) {
+                        return df2.parse(asString);
+                    } else {
+                        return df1.parse(asString);
+                    }
+                } catch (Exception ex) {
+                    Timber.e(ex);
                     return null;
                 }
+
             }
         });
         gsonBuilder.enableComplexMapKeySerialization()

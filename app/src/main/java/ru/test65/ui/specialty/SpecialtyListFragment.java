@@ -19,44 +19,49 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
+import ru.terrakok.cicerone.Cicerone;
+import ru.terrakok.cicerone.Router;
 import ru.test65.R;
+import ru.test65.data.bo.Specialty;
 import ru.test65.di.component.ActivityComponent;
 import ru.test65.ui.Screens;
 import ru.test65.ui.base.BaseFragment;
-import ru.terrakok.cicerone.Cicerone;
-import ru.terrakok.cicerone.Router;
 
 
 public class SpecialtyListFragment extends BaseFragment implements SpecialtyListMvpView {
 
     public static final String TAG = "WorkmanListFragment";
-    @Inject
-    Cicerone<Router> cicerone;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.specialtyList)
+    RecyclerView specialtyListRecyclerView;
+
     @Inject
     SpecialtyListMvpPresenter<SpecialtyListMvpView> mPresenter;
+
+    private SpecialtyListAdapter adapter;
 
     public static SpecialtyListFragment newInstance() {
         Bundle args = new Bundle();
         SpecialtyListFragment fragment = new SpecialtyListFragment();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @OnClick(R.id.button)
-    public void onToolbarClick() {
-        cicerone.getRouter().navigateTo(Screens.WORKMAN_LIST);
     }
 
     @Nullable
@@ -81,9 +86,20 @@ public class SpecialtyListFragment extends BaseFragment implements SpecialtyList
         activity.setSupportActionBar(toolbar);
         ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("Специальности");
+            actionBar.setTitle(R.string.specialty_title);
             actionBar.setDisplayShowTitleEnabled(true);
         }
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        specialtyListRecyclerView.setLayoutManager(layoutManager);
+        adapter = new SpecialtyListAdapter(getActivity(), specialty -> {
+            mPresenter.onSpecialtyClick(specialty);
+        });
+
+        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(getActivity(), layoutManager.getOrientation());
+        specialtyListRecyclerView.addItemDecoration(mDividerItemDecoration);
+
+        specialtyListRecyclerView.setAdapter(adapter);
     }
 
 
@@ -91,5 +107,12 @@ public class SpecialtyListFragment extends BaseFragment implements SpecialtyList
     public void onDestroyView() {
         mPresenter.onDetach();
         super.onDestroyView();
+    }
+
+    @Override
+    public void showSpecialtyList(List<Specialty> data) {
+        if (adapter == null) return;
+        adapter.setData(data);
+        adapter.notifyDataSetChanged();
     }
 }

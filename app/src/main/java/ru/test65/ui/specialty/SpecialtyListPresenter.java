@@ -15,19 +15,29 @@
 
 package ru.test65.ui.specialty;
 
+import android.os.Bundle;
+
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import ru.terrakok.cicerone.Cicerone;
+import ru.terrakok.cicerone.Router;
 import ru.test65.R;
 import ru.test65.data.DataManager;
+import ru.test65.data.bo.Specialty;
+import ru.test65.ui.Screens;
 import ru.test65.ui.base.BasePresenter;
+import ru.test65.ui.workman.list.WorkmanListFragment;
 import timber.log.Timber;
 
 
 public class SpecialtyListPresenter<V extends SpecialtyListMvpView> extends BasePresenter<V>
         implements SpecialtyListMvpPresenter<V> {
+
+    @Inject
+    Cicerone<Router> cicerone;
 
     @Inject
     public SpecialtyListPresenter(DataManager dataManager,
@@ -39,9 +49,24 @@ public class SpecialtyListPresenter<V extends SpecialtyListMvpView> extends Base
     public void onAttach(V mvpView) {
         super.onAttach(mvpView);
 
-        getDataManager().loadData().subscribeOn(Schedulers.io())
+        getDataManager().getAllSpecialty()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((data) -> Timber.d(data.toString()),
-                        (exception) -> getMvpView().onError(R.string.on_data_loading_error));
+                .doOnSubscribe(it -> getMvpView().showLoading())
+                .doOnTerminate(() -> getMvpView().hideLoading())
+                .subscribe(data -> getMvpView().showSpecialtyList(data),
+                        ex -> {
+                            getMvpView().showMessage(R.string.data_load_error_message);
+                            Timber.e(ex);
+                        });
+    }
+
+    @Override
+    public void onSpecialtyClick(Specialty specialty) {
+        final Bundle data = new Bundle();
+        data.putSerializable(WorkmanListFragment.SPECIALTY_EXTRA, specialty);
+        cicerone.getRouter().navigateTo(Screens.WORKMAN_LIST, data);
+
     }
 }
+

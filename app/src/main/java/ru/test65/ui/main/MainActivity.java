@@ -12,17 +12,18 @@ import android.widget.Toast;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import ru.terrakok.cicerone.Cicerone;
+import ru.terrakok.cicerone.Navigator;
+import ru.terrakok.cicerone.Router;
+import ru.terrakok.cicerone.android.SupportAppNavigator;
+import ru.terrakok.cicerone.commands.Command;
 import ru.test65.R;
 import ru.test65.ui.Screens;
 import ru.test65.ui.base.BaseActivity;
 import ru.test65.ui.specialty.SpecialtyListFragment;
 import ru.test65.ui.workman.card.WorkmanCardFragment;
 import ru.test65.ui.workman.list.WorkmanListFragment;
-import ru.terrakok.cicerone.Cicerone;
-import ru.terrakok.cicerone.Navigator;
-import ru.terrakok.cicerone.Router;
-import ru.terrakok.cicerone.android.SupportAppNavigator;
-import ru.terrakok.cicerone.commands.Command;
+import ru.test65.utils.AppConstants;
 
 public class MainActivity extends BaseActivity implements MainActivityMvpView {
 
@@ -44,9 +45,9 @@ public class MainActivity extends BaseActivity implements MainActivityMvpView {
                 case Screens.SPECIALTY_LIST:
                     return SpecialtyListFragment.newInstance();
                 case Screens.WORKMAN_CARD:
-                    return WorkmanCardFragment.newInstance();
+                    return WorkmanCardFragment.newInstance(data);
                 case Screens.WORKMAN_LIST:
-                    return WorkmanListFragment.newInstance();
+                    return WorkmanListFragment.newInstance(data);
             }
             return null;
         }
@@ -70,9 +71,8 @@ public class MainActivity extends BaseActivity implements MainActivityMvpView {
             }
 
             doubleBackToExitPressedOnce = true;
-            Toast.makeText(MainActivity.this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-
-            new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
+            Toast.makeText(MainActivity.this, R.string.double_click_to_exit_message, Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, AppConstants.DOUBLE_CLICK_TO_EXIT_TIMEOUT);
         }
     };
 
@@ -107,7 +107,6 @@ public class MainActivity extends BaseActivity implements MainActivityMvpView {
 
     @Override
     protected void setUp() {
-        cicerone.getRouter().newRootScreen(Screens.SPECIALTY_LIST);
 
     }
 

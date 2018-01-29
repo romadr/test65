@@ -11,6 +11,7 @@ import ru.test65.data.bo.Workman;
 import ru.test65.data.db.model.SpecialtyModel;
 import ru.test65.data.db.model.WorkmanModel;
 import ru.test65.di.ApplicationContext;
+import ru.test65.utils.CommonUtils;
 
 public class AppModelMapper implements ModelMapper {
 
@@ -26,16 +27,11 @@ public class AppModelMapper implements ModelMapper {
         if (workman == null) return null;
         WorkmanModel workmanModel = new WorkmanModel();
         workmanModel.setId(workman.getId());
-        workmanModel.setFName(workman.getFName());
-        workmanModel.setLName(workman.getLName());
+        workmanModel.setFName(CommonUtils.normalizeName(workman.getFName()));
+        workmanModel.setLName(CommonUtils.normalizeName(workman.getLName()));
         workmanModel.setBirthday(workman.getBirthday());
         workmanModel.setAvatrUrl(workman.getAvatrUrl());
-        if (workman.getSpecialty() != null) {
-            workmanModel.resetSpecialtyList();
-            for (Specialty specialty : workman.getSpecialty()) {
-                workmanModel.getSpecialtyList().add(toSpecialtyModel(specialty));
-            }
-        }
+
         return workmanModel;
     }
 

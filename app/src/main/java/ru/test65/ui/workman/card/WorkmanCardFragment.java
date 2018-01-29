@@ -36,8 +36,11 @@ public class WorkmanCardFragment extends BaseFragment implements WorkmanCardMvpV
     @Inject
     WorkmanCardMvpPresenter<WorkmanCardMvpView> mPresenter;
 
-    public static WorkmanCardFragment newInstance() {
+    public static WorkmanCardFragment newInstance(Object data) {
         Bundle args = new Bundle();
+        if(data instanceof Bundle){
+            args.putAll((Bundle) data);
+        }
         WorkmanCardFragment fragment = new WorkmanCardFragment();
         fragment.setArguments(args);
         return fragment;

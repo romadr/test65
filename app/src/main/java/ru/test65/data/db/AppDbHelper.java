@@ -15,6 +15,7 @@ import ru.test65.data.db.model.DaoMaster;
 import ru.test65.data.db.model.DaoSession;
 import ru.test65.data.db.model.JoinWorkmansWithSpecialtyModel;
 import ru.test65.data.db.model.JoinWorkmansWithSpecialtyModelDao;
+import ru.test65.data.db.model.SpecialtyModel;
 import ru.test65.data.db.model.WorkmanModel;
 
 
@@ -34,8 +35,9 @@ public class AppDbHelper implements DbHelper {
     public Observable<List<Workman>> getWorkmansBySpecialty(Long specialtyId) {
         return Observable.fromCallable(() -> {
             final QueryBuilder<WorkmanModel> queryBuilder = mDaoSession.getWorkmanModelDao().queryBuilder();
-            queryBuilder.join(JoinWorkmansWithSpecialtyModel.class, JoinWorkmansWithSpecialtyModelDao.Properties.WorkmanId);
-            return queryBuilder.where(JoinWorkmansWithSpecialtyModelDao.Properties.WorkmanId.eq(specialtyId)).list();
+            queryBuilder.join(JoinWorkmansWithSpecialtyModel.class, JoinWorkmansWithSpecialtyModelDao.Properties.WorkmanId)
+                    .where(JoinWorkmansWithSpecialtyModelDao.Properties.SpecialtyId.eq(specialtyId));
+            return queryBuilder.list();
         })
                 .flatMap(Observable::fromIterable)
                 .map(appModelMapper::toWorkmanBO)
@@ -62,23 +64,26 @@ public class AppDbHelper implements DbHelper {
         return Observable.just(
                 mDaoSession.callInTxNoException(() -> {
 
-                    //clear db
                     mDaoSession.getSpecialtyModelDao().deleteAll();
                     mDaoSession.getWorkmanModelDao().deleteAll();
 
-                    //save all specialty
                     for (Workman workmen : workmans) {
+                        WorkmanModel entity = appModelMapper.toWorkmanModel(workmen);
+                        mDaoSession.insertOrReplace(entity);
                         if (workmen.getSpecialty() != null) {
+                            entity.resetSpecialtyList();
                             for (Specialty specialty : workmen.getSpecialty()) {
-                                mDaoSession.getSpecialtyModelDao().insertOrReplace(appModelMapper.toSpecialtyModel(specialty));
+                                final SpecialtyModel specialtyModel = appModelMapper.toSpecialtyModel(specialty);
+                                mDaoSession.insertOrReplace(specialtyModel);
 
+                                JoinWorkmansWithSpecialtyModel joinWorkmansWithSpecialtyModel = new JoinWorkmansWithSpecialtyModel();
+                                joinWorkmansWithSpecialtyModel.setSpecialtyId(specialtyModel.getSpecialtyId());
+                                joinWorkmansWithSpecialtyModel.setWorkmanId(entity.getId());
+                                mDaoSession.insertOrReplace(joinWorkmansWithSpecialtyModel);
+
+                                entity.getSpecialtyList().add(specialtyModel);
                             }
                         }
-                    }
-
-                    //after save workmans
-                    for (Workman workmen : workmans) {
-                        mDaoSession.getWorkmanModelDao().insertOrReplace(appModelMapper.toWorkmanModel(workmen));
                     }
 
                     return true;

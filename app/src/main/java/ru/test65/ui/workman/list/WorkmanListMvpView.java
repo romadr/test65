@@ -16,8 +16,12 @@
 package ru.test65.ui.workman.list;
 
 
+import java.util.List;
+
+import ru.test65.data.bo.Workman;
 import ru.test65.ui.base.MvpView;
 
 public interface WorkmanListMvpView extends MvpView {
 
+    void showWorkmansList(List<Workman> data);
 }

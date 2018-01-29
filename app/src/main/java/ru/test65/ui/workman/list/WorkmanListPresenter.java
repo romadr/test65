@@ -17,9 +17,14 @@ package ru.test65.ui.workman.list;
 
 import javax.inject.Inject;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+import ru.test65.R;
 import ru.test65.data.DataManager;
+import ru.test65.data.bo.Specialty;
 import ru.test65.ui.base.BasePresenter;
+import timber.log.Timber;
 
 
 public class WorkmanListPresenter<V extends WorkmanListMvpView> extends BasePresenter<V>
@@ -29,5 +34,20 @@ public class WorkmanListPresenter<V extends WorkmanListMvpView> extends BasePres
     public WorkmanListPresenter(DataManager dataManager,
                                 CompositeDisposable compositeDisposable) {
         super(dataManager, compositeDisposable);
+    }
+
+    @Override
+    public void initWithSpecialty(Specialty specialty) {
+
+        getDataManager().getWorkmansBySpecialty(specialty.getSpecialtyId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(it -> getMvpView().showLoading())
+                .doOnTerminate(() -> getMvpView().hideLoading())
+                .subscribe(data -> getMvpView().showWorkmansList(data),
+                        ex -> {
+                            getMvpView().showMessage(R.string.data_load_error_message);
+                            Timber.e(ex);
+                        });
     }
 }
