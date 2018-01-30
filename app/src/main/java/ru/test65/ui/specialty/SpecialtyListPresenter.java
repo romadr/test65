@@ -59,7 +59,7 @@ public class SpecialtyListPresenter<V extends SpecialtyListMvpView> extends Base
     }
 
     private void loadAllSpecialty() {
-        getDataManager().getAllSpecialty()
+        getCompositeDisposable().add(getDataManager().getAllSpecialty()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(it -> getMvpView().showLoading())
@@ -68,7 +68,7 @@ public class SpecialtyListPresenter<V extends SpecialtyListMvpView> extends Base
                         ex -> {
                             getMvpView().showMessage(R.string.data_load_error_message);
                             Timber.e(ex);
-                        });
+                        }));
     }
 }
 

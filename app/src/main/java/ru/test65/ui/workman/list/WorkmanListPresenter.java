@@ -49,7 +49,7 @@ public class WorkmanListPresenter<V extends WorkmanListMvpView> extends BasePres
     @Override
     public void initWithSpecialty(Specialty specialty) {
 
-        getDataManager().getWorkmansBySpecialty(specialty.getSpecialtyId())
+        getCompositeDisposable().add(getDataManager().getWorkmansBySpecialty(specialty.getSpecialtyId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(it -> getMvpView().showLoading())
@@ -58,7 +58,7 @@ public class WorkmanListPresenter<V extends WorkmanListMvpView> extends BasePres
                         ex -> {
                             getMvpView().showMessage(R.string.data_load_error_message);
                             Timber.e(ex);
-                        });
+                        }));
     }
 
     @Override
